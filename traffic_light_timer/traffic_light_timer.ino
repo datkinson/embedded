@@ -1,24 +1,18 @@
-//define button input pins
-const int demoButton = 4;
-const int resetButton = 3;
-const int startButton = 2;
 //set LED pins
 const int greenLight = 9;
 const int amberLight = 8;
 const int redLight = 7;
-//variables
-int demoState = 0;
-int resetState = 0;
-int startState = 0;
+
+const int runtime = 60;
+int timeSeconds;
+int previousSeconds;
+int timeRemaining;
+
+int timerActive = 1;
 
 void setup()
 {
-  //initialise Serial connection
   Serial.begin(9600);
-  //set button pin states
-  pinMode(demoButton, INPUT);
-  pinMode(resetButton, INPUT);
-  pinMode(startButton, INPUT);
   //set LED pin states
   pinMode(greenLight, OUTPUT);
   pinMode(amberLight, OUTPUT);
@@ -27,15 +21,95 @@ void setup()
 
 void loop()
 {
+  checkButtons();
+  if(timerActive = 1)
+  {
+   timer(); 
+  }
+}
+
+void checkButtons()
+{
   
 }
 
-void checkButtonStates()
+void timer()
 {
-  //check demo button
-  demoState = digitalRead(demoButton);
-  //check reset button
-  resetState = digitalRead(resetButton);
-  //check start button
-  startState = digitalRead(startButton);
+  timeSeconds = millis() / 1000;
+  if(previousSeconds != timeSeconds)
+  {
+    previousSeconds = timeSeconds;
+    timeRemaining = runtime - timeSeconds;
+    printStats();
+    processLeds(runtime, timeRemaining);
+  }
+}
+
+void printStats()
+{
+  Serial.print("Time:  ");
+  Serial.print(timeSeconds);
+  Serial.print(" Target: ");
+  Serial.println(runtime);
+  Serial.print("RTime: ");
+  Serial.print(timeRemaining);
+}
+
+void finished()
+{
+  Serial.println("Finished!");
+  allLedsOff();
+  delay(500);
+  setRed();
+  delay(500);
+}
+
+void processLeds(int targetTime, int currentTime)
+{
+  Serial.print(" Colour: ");
+  if(currentTime > targetTime - (targetTime / 3))
+  {
+    Serial.println("Green");
+    setGreen();
+  }else
+  {
+    if(currentTime > (targetTime / 3))
+    {
+      Serial.println("Amber");
+      setAmber();
+    }else
+    {
+      if(currentTime > 0)
+      {
+        Serial.println("Red");
+        setRed();
+      }else
+      {
+        finished();
+      }
+    }
+  }
+}
+
+void allLedsOff()
+{
+  //turn off all LEDs
+  digitalWrite(greenLight, LOW);
+  digitalWrite(amberLight, LOW);
+  digitalWrite(redLight, LOW); 
+}
+void setGreen()
+{
+  allLedsOff();
+  digitalWrite(greenLight, HIGH);
+}
+void setAmber()
+{
+  allLedsOff();
+  digitalWrite(amberLight, HIGH);
+}
+void setRed()
+{
+  allLedsOff();
+  digitalWrite(redLight, HIGH);
 }
