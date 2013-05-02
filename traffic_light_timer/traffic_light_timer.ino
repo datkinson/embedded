@@ -32,5 +32,10 @@ void loop()
 
 void checkButtonStates()
 {
-  
+  //check demo button
+  demoState = digitalRead(demoButton);
+  //check reset button
+  resetState = digitalRead(resetButton);
+  //check start button
+  startState = digitalRead(startButton);
 }
