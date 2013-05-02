@@ -63,6 +63,7 @@ void checkButtonStates()
 void assignMode()
 {
  if (demoState == HIGH){
+  Serial.println("Demo button pressed");
   demoActive = 1; 
  }
  if (resetState == HIGH){
@@ -76,36 +77,85 @@ void assignMode()
 
 void resetTimer()
 {
+  Serial.println("Resetting timer");
   //reset all modes
   timerActive = 0;
   demoActive = 0;
   resetActive = 0;
   //reset time variables
   timeActivated = 0;
+  resetLeds();
+}
+void resetLeds()
+{
+  //Serial.println("Resetting LEDs");
   //turn off all LEDs
   digitalWrite(greenLight, LOW);
   digitalWrite(amberLight, LOW);
-  digitalWrite(redLight, LOW);
+  digitalWrite(redLight, LOW);  
 }
 
 void demo()
 {
   if(timeActivated = 0){
    startTimer(); 
+  }else{    
+    int totalRuntime = timeActivated + demoLength;
+    int uptime = millis();
+    int timeRemaining = secondsRemaining(timeActivated, demoLength);
+    printTimeRemaining(timeRemaining);
+    switchLeds(demoLength, timeRemaining);
+    if(timeRemaining < 0){
+      resetTimer(); 
+    }
   }
 }
 
 void startTimer()
 {
   timeActivated = millis();
+  int timeFinished = timeActivated + demoLength;
+  Serial.print("Time activated: ");
+  Serial.println(timeActivated);
+  Serial.print("Time to finish: ");
+  Serial.println(timeFinished);
+  
 }
 
 int secondsRemaining(int startTime, int totalTime)
 {
   int timeElapsed = (millis() - startTime);
+  int timeLeft = (totalTime - timeElapsed);
+  return timeLeft;
 }
 
 void switchLeds(int totalTime, int timeLeft)
 {
-  
+   int thirdTime = totalTime / 3;
+   int twoThirdTime = (totalTime / 3) * 2;
+   if(timeLeft < thirdTime)
+   {
+     resetLeds();
+     digitalWrite(greenLight, HIGH);
+   }
+   if(timeLeft < twoThirdTime)
+   {
+     resetLeds();
+     digitalWrite(amberLight, HIGH);
+   }
+   if(timeLeft > twoThirdTime)
+   {
+     resetLeds();
+     digitalWrite(redLight, HIGH);
+   }
+}
+
+void printTimeRemaining(int timeMillis)
+{
+ currentSeconds = (timeMillis / 1000);
+ if(currentSeconds != previousSeconds){
+   previousSeconds = currentSeconds;
+   Serial.print(currentSeconds);
+   Serial.println(" Seconds Remaining");
+ }
 }

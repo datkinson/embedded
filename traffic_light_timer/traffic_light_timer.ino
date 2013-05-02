@@ -1,14 +1,20 @@
+//set button pins
+const int startButton = 3;
+const int stopButton = 4;
 //set LED pins
 const int greenLight = 9;
 const int amberLight = 8;
 const int redLight = 7;
 
-const int runtime = 60;
+int startButtonState = 0;
+int stopButtonState = 0;
+const int runtime = 30;
+int startTime;
 int timeSeconds;
 int previousSeconds;
 int timeRemaining;
 
-int timerActive = 1;
+boolean timerActive = false;
 
 void setup()
 {
@@ -17,12 +23,15 @@ void setup()
   pinMode(greenLight, OUTPUT);
   pinMode(amberLight, OUTPUT);
   pinMode(redLight, OUTPUT);
+  allLedsOff();
+  timerActive = 0;
+//  delay(2000);
 }
 
 void loop()
 {
   checkButtons();
-  if(timerActive = 1)
+  if(timerActive = true)
   {
    timer(); 
   }
@@ -30,7 +39,17 @@ void loop()
 
 void checkButtons()
 {
-  
+  startButtonState = digitalRead(startButton);
+  stopButtonState = digitalRead(stopButton);
+  if(startButtonState == HIGH)
+  {
+    startTime = millis() / 1000;
+    timerActive = true;
+  }
+  if(stopButtonState == HIGH)
+  {
+    timerActive = false;
+  }
 }
 
 void timer()
@@ -39,7 +58,7 @@ void timer()
   if(previousSeconds != timeSeconds)
   {
     previousSeconds = timeSeconds;
-    timeRemaining = runtime - timeSeconds;
+    timeRemaining = (startTime + runtime) - timeSeconds;
     printStats();
     processLeds(runtime, timeRemaining);
   }
@@ -47,6 +66,10 @@ void timer()
 
 void printStats()
 {
+  Serial.print("startState: ");
+  Serial.print(startButtonState);
+  Serial.print(" stopState: ");
+  Serial.println(stopButtonState);
   Serial.print("Time:  ");
   Serial.print(timeSeconds);
   Serial.print(" Target: ");
