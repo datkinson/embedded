@@ -8,7 +8,7 @@ const int redLight = 7;
 
 int startButtonState = 0;
 int stopButtonState = 0;
-const int runtime = 30;
+const int runtime = 900;
 int startTime;
 int timeSeconds;
 int previousSeconds;
