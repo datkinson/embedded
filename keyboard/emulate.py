@@ -40,6 +40,9 @@ class Input(ctypes.Structure):
                 ("ii", Input_I)]
 
 def AssignKeys():
+    '''
+    Define the hex values for each key
+    '''
     global KEY_MAP
     KEY_MAP['space'] = 0x20
     KEY_MAP['up'] = 0x26
