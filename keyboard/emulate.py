@@ -103,43 +103,20 @@ def ReleaseKey(hexKeyCode):
     x = Input( ctypes.c_ulong(1), ii_ )
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
-
-def Demo():
-    '''
-    Demo prints
-    '''
-    global KEY_MAP
-    time.sleep(5)
-    PressKey(KEY_MAP['a'])
-    ReleaseKey(KEY_MAP['a'])
-    PressKey(0x45) #E
-    ReleaseKey(0x45) #E
-    PressKey(0x4C) #L
-    ReleaseKey(0x4C) #L
-    PressKey(0x4C) #L
-    ReleaseKey(0x4C) #L
-    PressKey(0x4F) #O
-    ReleaseKey(0x4F) #O
-
-    PressKey(0x20) #Space
-    ReleaseKey(0x20) #Space
-
-    PressKey(0x53) #S
-    ReleaseKey(0x53) #S
-    PressKey(0x54) #T
-    ReleaseKey(0x54) #T
-    PressKey(0x55) #U
-    ReleaseKey(0x55) #U
-
-    time.sleep(2)
-
 def PrintString(stringToPrint):
+    global KEY_MAP
     #characterlist = list(stringToPrint)
     for character in stringToPrint:
-        print character
+        if character == ' ':
+            letterToPrint = 'space'
+        else:
+            letterToPrint = character
+        PressKey(KEY_MAP[letterToPrint])
+        ReleaseKey(KEY_MAP[letterToPrint])
 
 if __name__ =="__main__":
 
     AssignKeys()
-    #Demo()
+    time.sleep(2)
     PrintString('hello there')
+
